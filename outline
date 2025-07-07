@@ -1,0 +1,11 @@
+Function and class outline:
+
+Functions:
+    data end:
+        grab data from plant database
+        filter data based on query
+
+    hardware end:
+        tie data to physical plant (sensor)
+        compare plant water levels to data
+        alert if water levels high or low
