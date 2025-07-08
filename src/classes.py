@@ -1,8 +1,15 @@
+import requests
+
 class PlantData():
-    def __init__(self, id, common_name, scientific_name, other_name, sunlight, sunlight_dur,
-                 pruning, pruning_count, seeds, propogation, hardiness, flowering_season, indoor,
-                 care, water_quality, water_period, water_vol, water_depth, water_temp, water_ph):
-        self.id = id
+    def __init__(self, api_token=None, base_url=None, raw_data:str=None, plant_id=None, common_name=None,
+                 scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
+                 pruning=None, pruning_count=None, seeds=None, propogation=None, hardiness=None,
+                 flowering_season=None, indoor=None, care=None, water_quality=None, water_period=None,
+                 water_vol=None, water_depth=None, water_temp=None, water_ph=None):
+        self.api_token = api_token
+        self.base_url = base_url
+        self.raw_data = raw_data
+        self.plant_id = plant_id
         self.common_name = common_name
         self.scientific_name = scientific_name
         self.other_name = other_name
@@ -11,7 +18,7 @@ class PlantData():
         self.pruning = pruning
         self.pruning_count = pruning_count
         self.seeds = seeds
-        self.propogation = propogation
+        self.propagation = propogation
         self.hardiness = hardiness
         self.flowering_season = flowering_season
         self.indoor = indoor
@@ -23,16 +30,42 @@ class PlantData():
         self.water_temp = water_temp
         self.water_ph = water_ph
 
-    def set_id(self, id):
-        if id is not None:
-            self.id = id
+    def set_api_token(self, api_token):
+        if api_token is not None:
+            self.api_token = api_token
+        else: print("Input API token empty!")
 
-    def get_id(self):
-        return self.id
+    def _get_api_token(self):
+        return self.api_token
+
+    def set_base_url(self, base_url):
+        if base_url is not None:
+            self.base_url = base_url
+        else: print("Input base URL empty!")
+
+    def get_base_url(self):
+        return self.base_url
+
+    def set_raw_data(self, raw_data):
+        if raw_data is not None:
+            self.raw_data = raw_data
+        else: print("Input data empty!")
+
+    def get_raw_data(self):
+        return self.raw_data
+
+    def set_plant_id(self, plant_id):
+        if plant_id is not None:
+            self.plant_id = plant_id
+        else: print("Input plant ID empty!")
+
+    def get_plant_id(self):
+        return self.plant_id
 
     def set_common_name(self, common_name):
         if common_name is not None:
             self.common_name = common_name
+        else: print("Input common name empty!")
 
     def get_common_name(self):
         return self.common_name
@@ -40,6 +73,7 @@ class PlantData():
     def set_scientific_name(self, scientific_name):
         if scientific_name is not None:
             self.scientific_name = scientific_name
+        else: print("Input scientific name empty!")
 
     def get_scientific_name(self):
         return self.scientific_name
@@ -47,6 +81,7 @@ class PlantData():
     def set_other_name(self, other_name):
         if other_name is not None:
             self.other_name = other_name
+        else: print("Input other name empty!")
 
     def get_other_name(self):
         return self.other_name
@@ -54,6 +89,7 @@ class PlantData():
     def set_sunlight(self, sunlight):
         if sunlight is not None:
             self.sunlight = sunlight
+        else: print("Input sunlight empty!")
 
     def get_sunlight(self):
         return self.sunlight
@@ -61,6 +97,7 @@ class PlantData():
     def set_pruning(self, pruning):
         if pruning is not None:
             self.pruning = pruning
+        else: print("Input pruning empty!")
 
     def get_pruning(self):
         return self.pruning
@@ -68,6 +105,7 @@ class PlantData():
     def set_pruning_count(self, pruning_count):
         if pruning_count is not None:
             self.pruning_count = pruning_count
+        else: print("Input pruning count empty!")
 
     def get_pruning_count(self):
         return self.pruning_count
@@ -75,20 +113,23 @@ class PlantData():
     def set_seeds(self, seeds):
         if seeds is not None:
             self.seeds = seeds
+        else: print("Input seeds empty!")
 
     def get_seeds(self):
         return self.seeds
 
     def set_propogation(self, propogation):
         if propogation is not None:
-            self.propogation = propogation
+            self.propagation = propogation
+        else: print("Input propogation empty!")
 
     def get_propogation(self):
-        return self.propogation
+        return self.propagation
 
     def set_hardiness(self, hardiness):
         if hardiness is not None:
             self.hardiness = hardiness
+        else: print("Input hardiness empty!")
 
     def get_hardiness(self):
         return self.hardiness
@@ -96,6 +137,7 @@ class PlantData():
     def set_flowering_season(self, flowering_season):
         if flowering_season is not None:
             self.flowering_season = flowering_season
+        else: print("Input flowering season empty!")
 
     def get_flowering_season(self):
         return self.flowering_season
@@ -103,6 +145,7 @@ class PlantData():
     def set_indoor(self, indoor):
         if indoor is not None:
             self.indoor = indoor
+        else: print("Input indoor empty!")
 
     def get_indoor(self):
         return self.indoor
@@ -110,6 +153,7 @@ class PlantData():
     def set_care(self, care):
         if care is not None:
             self.care = care
+        else: print("Input care empty!")
 
     def get_care(self):
         return self.care
@@ -117,6 +161,7 @@ class PlantData():
     def set_water_quality(self, water_quality):
         if water_quality is not None:
             self.water_quality = water_quality
+        else: print("Input water quality empty!")
 
     def get_water_quality(self):
         return self.water_quality
@@ -124,6 +169,7 @@ class PlantData():
     def set_water_period(self, water_period):
         if water_period is not None:
             self.water_period = water_period
+        else: print("Input water period empty!")
 
     def get_water_period(self):
         return self.water_period
@@ -131,6 +177,7 @@ class PlantData():
     def set_water_vol(self, water_vol):
         if water_vol is not None:
             self.water_vol = water_vol
+        else: print("Input water vol empty!")
 
     def get_water_vol(self):
         return self.water_vol
@@ -138,6 +185,7 @@ class PlantData():
     def set_water_temp(self, water_temp):
         if water_temp is not None:
             self.water_temp = water_temp
+        else: print("Input water temp empty!")
 
     def get_water_temp(self):
         return self.water_temp
@@ -145,12 +193,25 @@ class PlantData():
     def set_water_ph(self, water_ph):
         if water_ph is not None:
             self.water_ph = water_ph
+        else: print("Input water ph empty!")
 
     def get_water_ph(self):
         return self.water_ph
 
-    def grab_data(self, api, id):# TODO: query api and return data
-        return None
+    def grab_data(self, query, page=1, url=""):# TODO: query api and return data
+        api_token = self._get_api_token()
+        if api_token and query and page and url is not None:
+            params = {
+                'key' : api_token,
+                'q' : query,
+                'page' : page
+            }
+            try:
+                response = requests.get(url, params=params)
+                self.raw_data = response.json()
+            except requests.Timeout as e:
+                print(e)
+        else: print("grab_data params empty!")
 
     def filter_data(self, raw, query):# TODO: sanitize and filter raw data based on query, return filtered list
         return None
