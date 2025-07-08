@@ -1,7 +1,7 @@
 import requests
 
 class PlantData():
-    def __init__(self, api_token=None, base_url=None, raw_data:str=None, plant_id=None, common_name=None,
+    def __init__(self, api_token=None, base_url=None, raw_data:dict=None, plant_id:list=[], common_name=None,
                  scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
                  pruning=None, pruning_count=None, seeds=None, propogation=None, hardiness=None,
                  flowering_season=None, indoor=None, care=None, water_quality=None, water_period=None,
@@ -198,7 +198,7 @@ class PlantData():
     def get_water_ph(self):
         return self.water_ph
 
-    def grab_data(self, query, page=1, url=""):# TODO: query api and return data
+    def get_plant_list(self, query, page=1, url=""):# TODO: query api and return data
         api_token = self._get_api_token()
         if api_token and query and page and url is not None:
             params = {
@@ -209,11 +209,34 @@ class PlantData():
             try:
                 response = requests.get(url, params=params)
                 self.raw_data = response.json()
+
+                for i in range(len(self.raw_data)):
+                    self.plant_id[i] = self.raw_data['data'][i]['id']
+
             except requests.Timeout as e:
                 print(e)
         else: print("grab_data params empty!")
 
-    def filter_data(self, raw, query):# TODO: sanitize and filter raw data based on query, return filtered list
+    def get_plant_data(self):
+        api_token = self._get_api_token()
+        if api_token and self.plant_id is not None:
+            plants = self.raw_data['data']
+
+            for plant in plants:
+                print(plant['common_name'])
+
+            params = {
+                'id' : self.plant_id,
+                'key' : api_token
+            }
+
+        elif api_token is None:
+            print("api token empty!")
+
+        elif self.plant_id is None:
+            print("plant id empty!")
+
+    def filter_data(self, raw_data, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
         return None
 
 
