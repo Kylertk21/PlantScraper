@@ -14,13 +14,15 @@ if __name__ == "__main__":
     corsican_mint.set_plants_dict("corsican_mint", 1, SEARCH_URL)
 
     plants_list = corsican_mint.get_plants_dict()
-    corsican_mint_id = corsican_mint.get_plant_id()
+    corsican_mint_id = corsican_mint.get_plant_id(0)
+    print(corsican_mint_id)
 
     corsican_mint.set_plant_data(DETAILS_URL, corsican_mint_id)
-    corsican_mint_data = corsican_mint.get_plant_data(corsican_mint_id)
 
+    corsican_mint_data = corsican_mint.get_plant_data(corsican_mint_id)
     corsican_mint.populate_plant_class(corsican_mint_data)
+
     corsican_mint_name = corsican_mint.common_name
-    print(corsican_mint_name)
+    corsican_mint_water = corsican_mint.water
 
 

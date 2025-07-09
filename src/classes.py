@@ -1,14 +1,16 @@
 import requests
+from requests.utils import super_len
+
 
 class PlantData:
     """
     Data structure for holding plant data
     """
     def __init__(self, api_token_id=None, api_token_secret=None, base_url=None, plants_dict:dict=None, plant_data:dict=None,
-                 plant_id:list=[], common_name=None, scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
-                 pruning=None, pruning_count=None, seeds=None, propogation=None, hardiness=None,
-                 flowering_season=None, indoor=None, care=None, water_quality=None, water_period=None,
-                 water_vol=None, water_depth=None, water_temp=None, water_ph=None):
+                 plant_id:list=[], common_name=None, scientific_name=None, description=None, link=None,
+                 edible=None, growth=None, water=None, light=None, hardiness=None, layer=None, soil_type=None,
+                 family=None):
+
         self.api_token_id = api_token_id
         self.api_token_secret = api_token_secret
         self.base_url = base_url
@@ -17,23 +19,16 @@ class PlantData:
         self.plant_id = plant_id
         self.common_name = common_name
         self.scientific_name = scientific_name
-        self.other_name = other_name
-        self.sunlight = sunlight
-        self.sunlight_dur = sunlight_dur
-        self.pruning = pruning
-        self.pruning_count = pruning_count
-        self.seeds = seeds
-        self.propagation = propogation
+        self.description = description
+        self.link = link
+        self.edible = edible
+        self.growth = growth
+        self.water = water
+        self.light = light
         self.hardiness = hardiness
-        self.flowering_season = flowering_season
-        self.indoor = indoor
-        self.care = care
-        self.water_quality = water_quality
-        self.water_period = water_period
-        self.water_vol = water_vol
-        self.water_depth = water_depth
-        self.water_temp = water_temp
-        self.water_ph = water_ph
+        self.layer = layer
+        self.soil_type = soil_type
+        self.family = family
 
     def set_api_token_id(self, api_token_id):
         if api_token_id is not None:
@@ -67,8 +62,16 @@ class PlantData:
         """
         return getattr(self, 'plant_id', [])
 
-    def get_plant_id(self):
-        return self.plant_id
+    def get_plant_id(self, index=None):
+        """
+        Returns list of plant IDs, or single plant ID if index is passed
+        :param index:
+        :return:
+        """
+        if index is None:
+            return self.plant_id
+        else:
+            return getattr(self, 'plant_id', [])[index]
 
     def set_common_name(self, common_name):
         if common_name is not None:
@@ -86,129 +89,79 @@ class PlantData:
     def get_scientific_name(self):
         return self.scientific_name
 
-    def set_other_name(self, other_name):
-        if other_name is not None:
-            self.other_name = other_name
-        else: print("Input other name empty!")
+    def set_description(self, description):
+        if description is not None:
+            self.description = description
 
-    def get_other_name(self):
-        return self.other_name
+    def get_description(self):
+        return self.description
 
-    def set_sunlight(self, sunlight):
-        if sunlight is not None:
-            self.sunlight = sunlight
-        else: print("Input sunlight empty!")
+    def set_link(self, link):
+        if link is not None:
+            self.link = link
 
-    def get_sunlight(self):
-        return self.sunlight
+    def get_link(self):
+        return self.link
 
-    def set_pruning(self, pruning):
-        if pruning is not None:
-            self.pruning = pruning
-        else: print("Input pruning empty!")
+    def set_edible(self, edible):
+        if edible is not None:
+            self.edible = edible
 
-    def get_pruning(self):
-        return self.pruning
+    def get_edible(self):
+        return self.edible
 
-    def set_pruning_count(self, pruning_count):
-        if pruning_count is not None:
-            self.pruning_count = pruning_count
-        else: print("Input pruning count empty!")
+    def set_growth(self, growth):
+        if growth is not None:
+            self.growth = growth
 
-    def get_pruning_count(self):
-        return self.pruning_count
+    def get_growth(self):
+        return self.growth
 
-    def set_seeds(self, seeds):
-        if seeds is not None:
-            self.seeds = seeds
-        else: print("Input seeds empty!")
+    def set_water(self, water):
+        if water is not None:
+            self.water = water
 
-    def get_seeds(self):
-        return self.seeds
+    def get_water(self):
+        return self.water
 
-    def set_propogation(self, propogation):
-        if propogation is not None:
-            self.propagation = propogation
-        else: print("Input propogation empty!")
+    def set_light(self, light):
+        if light is not None:
+            self.light = light
 
-    def get_propogation(self):
-        return self.propagation
+    def get_light(self):
+        return self.light
 
     def set_hardiness(self, hardiness):
         if hardiness is not None:
             self.hardiness = hardiness
-        else: print("Input hardiness empty!")
 
     def get_hardiness(self):
         return self.hardiness
 
-    def set_flowering_season(self, flowering_season):
-        if flowering_season is not None:
-            self.flowering_season = flowering_season
-        else: print("Input flowering season empty!")
+    def set_layer(self, layer):
+        if layer is not None:
+            self.layer = layer
 
-    def get_flowering_season(self):
-        return self.flowering_season
+    def get_layer(self):
+        return self.layer
 
-    def set_indoor(self, indoor):
-        if indoor is not None:
-            self.indoor = indoor
-        else: print("Input indoor empty!")
+    def set_soil_type(self, soil_type):
+        if soil_type is not None:
+            self.soil_type = soil_type
 
-    def get_indoor(self):
-        return self.indoor
+    def get_soil_type(self):
+        return self.soil_type
 
-    def set_care(self, care):
-        if care is not None:
-            self.care = care
-        else: print("Input care empty!")
+    def set_family(self, family):
+        if family is not None:
+            self.family = family
 
-    def get_care(self):
-        return self.care
-
-    def set_water_quality(self, water_quality):
-        if water_quality is not None:
-            self.water_quality = water_quality
-        else: print("Input water quality empty!")
-
-    def get_water_quality(self):
-        return self.water_quality
-
-    def set_water_period(self, water_period):
-        if water_period is not None:
-            self.water_period = water_period
-        else: print("Input water period empty!")
-
-    def get_water_period(self):
-        return self.water_period
-
-    def set_water_vol(self, water_vol):
-        if water_vol is not None:
-            self.water_vol = water_vol
-        else: print("Input water vol empty!")
-
-    def get_water_vol(self):
-        return self.water_vol
-
-    def set_water_temp(self, water_temp):
-        if water_temp is not None:
-            self.water_temp = water_temp
-        else: print("Input water temp empty!")
-
-    def get_water_temp(self):
-        return self.water_temp
-
-    def set_water_ph(self, water_ph):
-        if water_ph is not None:
-            self.water_ph = water_ph
-        else: print("Input water ph empty!")
-
-    def get_water_ph(self):
-        return self.water_ph
+    def get_family(self):
+        return self.family
 
     def set_plants_dict(self, query, page=1, url=""):
         """
-        Queries Perma people API for list of plants based on query parameter,
+        Queries Permapeople API for list of plants based on query parameter,
         sets self.plants_dict to a dictionary of the returned data
         :param query:
         :param page:
@@ -255,7 +208,7 @@ class PlantData:
 
     def set_plant_data(self, base_url, plant_id):
         """
-        Queries perenual API for plant details based on plant_id,
+        Queries Permapeople API for plant details based on plant_id,
         sets self.plant_data to a dictionary of the returned data
         :param base_url:
         :param plant_id:
@@ -280,6 +233,8 @@ class PlantData:
             try:
                 response = requests.get(url, headers=headers, json=query)
                 self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
+                print(self.plant_data)
+
 
             except requests.Timeout as e:
                 print(e)
@@ -291,7 +246,7 @@ class PlantData:
             print("plant id empty!")
 
     def get_plant_data(self, plant_id):
-        return self.plant_data[plant_id]
+        return self.plant_data.get(plant_id, {})
 
     def populate_plant_class(self, plant_data):
         """
@@ -299,12 +254,26 @@ class PlantData:
         :param plant_data:
         :return:
         """
+        if not isinstance(plant_data, dict):
+            print("Invalid plant_data format!")
+            return
+
         if plant_data is not None:
-            self.common_name = plant_data.get('common_name')
-            self.scientific_name = plant_data.get('scientific_name')
-            self.other_name = plant_data.get('other_name')
-            self.sunlight = plant_data.get('sunlight')
-            self.sunlight_dur = plant_data.get('sunlight_dur')
+            self.set_common_name(plant_data.get('name'))
+            self.set_scientific_name(plant_data.get('scientific_name'))
+            self.set_description(plant_data.get('description'))
+            self.set_link(plant_data.get('link'))
+
+            data_list
+            self.set_edible(plant_data.get('Edible parts'))  # safer now
+            self.set_growth(plant_data.get('Growth'))
+            self.set_water(plant_data.get('Water requirement'))
+            self.set_light(plant_data.get('Light requirement'))
+            self.set_soil_type(plant_data.get('Soil type'))
+            self.set_family(plant_data.get('Family'))
+            self.set_hardiness(plant_data.get('USDA Hardiness zone'))
+            self.set_layer(plant_data.get('Layer'))
+
 
 
 
