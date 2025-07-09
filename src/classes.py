@@ -4,14 +4,15 @@ class PlantData:
     """
     Data structure for holding plant data
     """
-    def __init__(self, api_token=None, base_url=None, plants_list:dict=None, plant_data:dict=None,
+    def __init__(self, api_token_id=None, api_token_secret=None, base_url=None, plants_dict:dict=None, plant_data:dict=None,
                  plant_id:list=[], common_name=None, scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
                  pruning=None, pruning_count=None, seeds=None, propogation=None, hardiness=None,
                  flowering_season=None, indoor=None, care=None, water_quality=None, water_period=None,
                  water_vol=None, water_depth=None, water_temp=None, water_ph=None):
-        self.api_token = api_token
+        self.api_token_id = api_token_id
+        self.api_token_secret = api_token_secret
         self.base_url = base_url
-        self.plants_list = plants_list
+        self.plants_dict = plants_dict
         self.plant_data = plant_data
         self.plant_id = plant_id
         self.common_name = common_name
@@ -34,13 +35,21 @@ class PlantData:
         self.water_temp = water_temp
         self.water_ph = water_ph
 
-    def set_api_token(self, api_token):
-        if api_token is not None:
-            self.api_token = api_token
+    def set_api_token_id(self, api_token_id):
+        if api_token_id is not None:
+            self.api_token_id = api_token_id
+        else: print("api_token_id is empty!")
+
+    def _get_api_token_id(self):
+        return self.api_token_id
+
+    def set_api_token_secret(self, api_token_secret):
+        if api_token_secret is not None:
+            self.api_token_secret = api_token_secret
         else: print("Input API token empty!")
 
-    def _get_api_token(self):
-        return self.api_token
+    def _get_api_token_secret(self):
+        return self.api_token_secret
 
     def set_base_url(self, base_url):
         if base_url is not None:
@@ -51,9 +60,12 @@ class PlantData:
         return self.base_url
 
     def set_plant_id(self, plant_id):
-        if plant_id is not None:
-            self.plant_id = plant_id
-        else: print("Input plant ID empty!")
+        """
+        Returns list of plant IDs, or empty list if not set
+        :param plant_id:
+        :return:
+        """
+        return getattr(self, 'plant_id', [])
 
     def get_plant_id(self):
         return self.plant_id
@@ -194,83 +206,85 @@ class PlantData:
     def get_water_ph(self):
         return self.water_ph
 
-    def set_plants_list(self, query, page=1, url=""):
+    def set_plants_dict(self, query, page=1, url=""):
         """
-        Queries Perenual API for list of plants based on query parameter,
-        sets self.plants_list to a dictionary of the returned data
+        Queries Perma people API for list of plants based on query parameter,
+        sets self.plants_dict to a dictionary of the returned data
         :param query:
         :param page:
         :param url:
         :return:
         """
-        api_token = self._get_api_token()
-        if api_token and query and url:
-            params = {
-                'key' : api_token,
-                'q' : query,
-                'page' : page
+        api_token_id = self._get_api_token_id()
+        api_token_secret = self._get_api_token_secret()
+        if api_token_id and api_token_secret and query and url:
+            headers = {
+                'x-permapeople-key-id' : api_token_id,
+                'x-permapeople-key-secret' : api_token_secret,
+            }
+            query = {
+                'q' : query
             }
             try:
-                response = requests.get(url, params=params)
-                data = response.json()
+                response = requests.post(url, headers=headers, json=query)
+                response.raise_for_status()
+                plants = response.json()
 
-                if not hasattr(self, 'plants_list') or self.plants_list is None:
-                    self.plants_list = {}
+                if not hasattr(self, 'plants_dict') or self.plants_dict is None:
+                    self.plants_dict = {'plants' : []}
 
                 if not hasattr(self, 'plant_id') or self.plant_id:
                     self.plant_id = []
 
-                self.plants_list = data
-
-                if 'data' in data:
-                    self.plants_list['data'].extend(data['data'])
-
-                    for plant in data['data']:
-                        plant_id = plant.get('id')
-                        if plant_id is not None and plant_id not in self.plant_id:
-                            print("populating with plant id...")
-                            self.plant_id.append(plant_id)
-                        elif plant_id is None:
-                            print("No plant id found!")
-                        elif plant_id in self.plant_id:
-                            print("plant id already exists skipping...")
-                else:
-                    print("No data returned!")
+                for plant in plants['plants']:
+                    if plant['id'] not in self.plant_id:
+                        print('Adding plant to dict...')
+                        self.plant_id.append(plant['id'])
+                        self.plants_dict['plants'].append(plant)
+                    else:
+                        print('Plant already in list, skipping...')
 
             except requests.Timeout as e:
                 print(e)
 
         else:
-            print("missing parameters for set_plants_list!")
+            print("missing parameters for set_plants_dict!")
 
-    def get_plants_list(self):
-        return self.plants_list
+    def get_plants_dict(self):
+        return self.plants_dict
 
-    def set_plant_data(self, url, plant_id):
+    def set_plant_data(self, base_url, plant_id):
         """
         Queries perenual API for plant details based on plant_id,
         sets self.plant_data to a dictionary of the returned data
+        :param base_url:
         :param plant_id:
-        :param url:
         :return:
         """
-        api_token = self._get_api_token()
-        if api_token and plant_id is not None:
+        api_token_id = self._get_api_token_id()
+        api_token_secret = self._get_api_token_secret()
+        if api_token_id and api_token_secret and plant_id:
             if not hasattr(self, 'plant_data') or self.plant_data is None:
                 self.plant_data = {}
 
-            params = {
-                'key' : api_token,
-                'id' : plant_id
+            headers = {
+                'x-permapeople-key-id' : api_token_id,
+                'x-permapeople-key-secret' : api_token_secret
             }
+
+            query = {
+                'q' : plant_id
+            }
+            url = f"{base_url}/{plant_id}"
+
             try:
-                response = requests.get(url, params=params)
+                response = requests.get(url, headers=headers, json=query)
                 self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
 
             except requests.Timeout as e:
                 print(e)
 
-        elif api_token is None:
+        elif api_token_secret is None:
             print("api token empty!")
 
         elif self.plant_id is None:
@@ -279,10 +293,22 @@ class PlantData:
     def get_plant_data(self, plant_id):
         return self.plant_data[plant_id]
 
-    def populate_plant_data(self, plant_data):
+    def populate_plant_class(self, plant_data):
+        """
+        Populates PlantData parameters with those returned from the API
+        :param plant_data:
+        :return:
+        """
+        if plant_data is not None:
+            self.common_name = plant_data.get('common_name')
+            self.scientific_name = plant_data.get('scientific_name')
+            self.other_name = plant_data.get('other_name')
+            self.sunlight = plant_data.get('sunlight')
+            self.sunlight_dur = plant_data.get('sunlight_dur')
 
 
-    def filter_data(self, plants_list, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
+
+    def filter_data(self, plants_dict, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
         return None
 
 
