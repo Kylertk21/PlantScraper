@@ -1,14 +1,18 @@
 import requests
 
-class PlantData():
-    def __init__(self, api_token=None, base_url=None, raw_data:dict=None, plant_id:list=[], common_name=None,
-                 scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
+class PlantData:
+    """
+    Data structure for holding plant data
+    """
+    def __init__(self, api_token=None, base_url=None, plants_list:dict=None, plant_data:dict=None,
+                 plant_id:list=[], common_name=None, scientific_name=None, other_name=None, sunlight=None, sunlight_dur=None,
                  pruning=None, pruning_count=None, seeds=None, propogation=None, hardiness=None,
                  flowering_season=None, indoor=None, care=None, water_quality=None, water_period=None,
                  water_vol=None, water_depth=None, water_temp=None, water_ph=None):
         self.api_token = api_token
         self.base_url = base_url
-        self.raw_data = raw_data
+        self.plants_list = plants_list
+        self.plant_data = plant_data
         self.plant_id = plant_id
         self.common_name = common_name
         self.scientific_name = scientific_name
@@ -45,14 +49,6 @@ class PlantData():
 
     def get_base_url(self):
         return self.base_url
-
-    def set_raw_data(self, raw_data):
-        if raw_data is not None:
-            self.raw_data = raw_data
-        else: print("Input data empty!")
-
-    def get_raw_data(self):
-        return self.raw_data
 
     def set_plant_id(self, plant_id):
         if plant_id is not None:
@@ -198,9 +194,17 @@ class PlantData():
     def get_water_ph(self):
         return self.water_ph
 
-    def get_plant_list(self, query, page=1, url=""):# TODO: query api and return data
+    def set_plants_list(self, query, page=1, url=""):
+        """
+        Queries Perenual API for list of plants based on query parameter,
+        sets self.plants_list to a dictionary of the returned data
+        :param query:
+        :param page:
+        :param url:
+        :return:
+        """
         api_token = self._get_api_token()
-        if api_token and query and page and url is not None:
+        if api_token and query and url:
             params = {
                 'key' : api_token,
                 'q' : query,
@@ -208,27 +212,63 @@ class PlantData():
             }
             try:
                 response = requests.get(url, params=params)
-                self.raw_data = response.json()
+                data = response.json()
 
-                for i in range(len(self.raw_data)):
-                    self.plant_id[i] = self.raw_data['data'][i]['id']
+                if not hasattr(self, 'plants_list') or self.plants_list is None:
+                    self.plants_list = {}
+
+                if not hasattr(self, 'plant_id') or self.plant_id:
+                    self.plant_id = []
+
+                self.plants_list = data
+
+                if 'data' in data:
+                    self.plants_list['data'].extend(data['data'])
+
+                    for plant in data['data']:
+                        plant_id = plant.get('id')
+                        if plant_id is not None and plant_id not in self.plant_id:
+                            print("populating with plant id...")
+                            self.plant_id.append(plant_id)
+                        elif plant_id is None:
+                            print("No plant id found!")
+                        elif plant_id in self.plant_id:
+                            print("plant id already exists skipping...")
+                else:
+                    print("No data returned!")
 
             except requests.Timeout as e:
                 print(e)
-        else: print("grab_data params empty!")
 
-    def get_plant_data(self):
+        else:
+            print("missing parameters for set_plants_list!")
+
+    def get_plants_list(self):
+        return self.plants_list
+
+    def set_plant_data(self, url, plant_id):
+        """
+        Queries perenual API for plant details based on plant_id,
+        sets self.plant_data to a dictionary of the returned data
+        :param plant_id:
+        :param url:
+        :return:
+        """
         api_token = self._get_api_token()
-        if api_token and self.plant_id is not None:
-            plants = self.raw_data['data']
-
-            for plant in plants:
-                print(plant['common_name'])
+        if api_token and plant_id is not None:
+            if not hasattr(self, 'plant_data') or self.plant_data is None:
+                self.plant_data = {}
 
             params = {
-                'id' : self.plant_id,
-                'key' : api_token
+                'key' : api_token,
+                'id' : plant_id
             }
+            try:
+                response = requests.get(url, params=params)
+                self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
+
+            except requests.Timeout as e:
+                print(e)
 
         elif api_token is None:
             print("api token empty!")
@@ -236,7 +276,13 @@ class PlantData():
         elif self.plant_id is None:
             print("plant id empty!")
 
-    def filter_data(self, raw_data, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
+    def get_plant_data(self, plant_id):
+        return self.plant_data[plant_id]
+
+    def populate_plant_data(self, plant_data):
+
+
+    def filter_data(self, plants_list, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
         return None
 
 
