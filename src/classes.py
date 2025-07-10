@@ -233,8 +233,6 @@ class PlantData:
             try:
                 response = requests.get(url, headers=headers, json=query)
                 self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
-                print(self.plant_data)
-
 
             except requests.Timeout as e:
                 print(e)

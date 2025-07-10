@@ -27,22 +27,15 @@ def search_plants(plant_name, pages):
         pid = p.get('id')
         print(f"{i + 1}: {name} (ID: {pid})")
 
-    selection = Input("Enter plant number to view details: ")
+    selection = input("Enter plant number to view details: ")
     try:
+        index = int(selection) - 1
+        index_id = plant.get_plant_id(index)
+        retrieve_plant(index_id)
 
-
-    elif plant_name in plant.get_plant_id():
-        plant.set_plant_data(DETAILS_URL, plant_name)
-        plant.populate_plant_class(plant.plant_data)
-        print(plant.common_name)
-        return plant
-
-    else:
-        plant.set_plants_dict(plant_name, pages, SEARCH_URL)
-        plant.set_plant_data(DETAILS_URL, plant.plant_id[0])
-        plant.populate_plant_class(plant.plant_data)
-        print(plant.common_name)
-        return plant
+    except (IndexError, ValueError):
+        print("Invalid selection!")
+        return None
 
 
 def help_menu():
@@ -55,12 +48,30 @@ def help_menu():
         --> retrieve to view plant details    
         """)
 
-def retrieve_plant(plant_name):
-    if plant_name:
-        plant = PlantData(plant_name)
+def retrieve_plant(plant_id):
+    if plant_id:
+        plant = PlantData()
         plant.set_api_token_id(API_TOKEN_ID)
         plant.set_api_token_secret(API_TOKEN_SECRET)
+        plant.set_plant_data(DETAILS_URL, plant_id)
+        data = plant.get_plant_data(plant_id)
+        plant.populate_plant_class(data)
 
+        print(f"Plant ID: {plant_id}")
+        print(f"Common Name: {plant.common_name}")
+        print(f"Scientific Name: {plant.scientific_name}")
+        print(f"Family: {plant.family}")
+        print(f"Description: {plant.description}")
+        print(f"Link: {plant.link}")
+        print(f"Edible Parts: {plant.edible}")
+        print(f"Growth Rate: {plant.growth}")
+        print(f"Water Requirements: {plant.water}")
+        print(f"Light Requirements: {plant.light}")
+        print(f"Hardiness Rating: {plant.hardiness}")
+        print(f"Soil Type: {plant.soil_type}")
+
+    else:
+        print("No plant_id supplied!")
 
 def main():
     help_menu()
@@ -71,14 +82,41 @@ def main():
         elif command == "search":
             plant_name = input("Plant Name?: ")
             pages = input("Pages?: ")
-            print (search_plants(plant_name, pages))
+            search_plants(plant_name, pages)
         elif command == "retrieve":
-            retrieve_plant(input("Plant Name / ID?: "))
-
-
-
+            plant_id = input("Plant ID?: ")
+            retrieve_plant(plant_id)
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
