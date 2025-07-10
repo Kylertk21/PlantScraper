@@ -276,13 +276,6 @@ class PlantData:
             self.set_hardiness(data_dict.get('USDA Hardiness zone'))
             self.set_layer(data_dict.get('Layer'))
 
-
-
-
-    def filter_data(self, plants_dict, plant_filter):# TODO: sanitize and filter raw data based on query, return filtered list
-        return None
-
-
 class Sensor():
     def __init__(self, sensor_id, sunlight, time, water, humidity, ph):
         self.sensor_id = sensor_id
