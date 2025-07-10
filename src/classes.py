@@ -264,15 +264,17 @@ class PlantData:
             self.set_description(plant_data.get('description'))
             self.set_link(plant_data.get('link'))
 
-            data_list
-            self.set_edible(plant_data.get('Edible parts'))  # safer now
-            self.set_growth(plant_data.get('Growth'))
-            self.set_water(plant_data.get('Water requirement'))
-            self.set_light(plant_data.get('Light requirement'))
-            self.set_soil_type(plant_data.get('Soil type'))
-            self.set_family(plant_data.get('Family'))
-            self.set_hardiness(plant_data.get('USDA Hardiness zone'))
-            self.set_layer(plant_data.get('Layer'))
+            data_list = plant_data.get('data', []) # list of data dicts
+            data_dict = {item['key']: item['value'] for item in data_list} # cleans key : value pair
+
+            self.set_edible(data_dict.get('Edible parts'))
+            self.set_growth(data_dict.get('Growth'))
+            self.set_water(data_dict.get('Water requirement'))
+            self.set_light(data_dict.get('Light requirement'))
+            self.set_soil_type(data_dict.get('Soil type'))
+            self.set_family(data_dict.get('Family'))
+            self.set_hardiness(data_dict.get('USDA Hardiness zone'))
+            self.set_layer(data_dict.get('Layer'))
 
 
 

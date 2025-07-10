@@ -22,7 +22,15 @@ if __name__ == "__main__":
     corsican_mint_data = corsican_mint.get_plant_data(corsican_mint_id)
     corsican_mint.populate_plant_class(corsican_mint_data)
 
-    corsican_mint_name = corsican_mint.common_name
-    corsican_mint_water = corsican_mint.water
+    print(f"name: {corsican_mint.common_name}")
+    print(f"edible parts: {corsican_mint.edible}")
+    print(f"growth: {corsican_mint.growth}")
+    print(f"water requirement: {corsican_mint.water}")
+    print(f"light requirement: {corsican_mint.light}")
+    print(f"soil type: {corsican_mint.soil_type}")
+    print(f"family: {corsican_mint.family}")
+    print(f"hardiness: {corsican_mint.hardiness}")
+    print(f"layer: {corsican_mint.layer}")
+
 
 
