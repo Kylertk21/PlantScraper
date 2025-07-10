@@ -1,16 +1,21 @@
-from classes import PlantData
+from src.classes import *
 import json
+from flask import Flask
 
 API_TOKEN_ID = 'es8PtscRbKJ7'
 API_TOKEN_SECRET = 'aacc3745-7123-4cb5-ac1a-703cf61ee82f'
 SEARCH_URL = 'https://permapeople.org/api/search'
 DETAILS_URL = 'https://permapeople.org/api/plants/'
 
+app = Flask("Plant Scraper Hub")
+
+
+
 def search_plants(plant_name, pages):
     plant = PlantData()
     plant_name = plant_name.lower()
     if not plant_name:
-        return "Empty parameters passed!"
+        return []
 
     plant.set_api_token_id(API_TOKEN_ID)
     plant.set_api_token_secret(API_TOKEN_SECRET)
@@ -57,21 +62,24 @@ def retrieve_plant(plant_id):
         data = plant.get_plant_data(plant_id)
         plant.populate_plant_class(data)
 
-        print(f"Plant ID: {plant_id}")
-        print(f"Common Name: {plant.common_name}")
-        print(f"Scientific Name: {plant.scientific_name}")
-        print(f"Family: {plant.family}")
-        print(f"Description: {plant.description}")
-        print(f"Link: {plant.link}")
-        print(f"Edible Parts: {plant.edible}")
-        print(f"Growth Rate: {plant.growth}")
-        print(f"Water Requirements: {plant.water}")
-        print(f"Light Requirements: {plant.light}")
-        print(f"Hardiness Rating: {plant.hardiness}")
-        print(f"Soil Type: {plant.soil_type}")
+        return {
+            "Plant ID": plant_id,
+            "Common Name": plant.common_name,
+            "Scientific Name": plant.scientific_name,
+            "Family": plant.family,
+            "Description": plant.description,
+            "Link": plant.link,
+            "Edible Parts": plant.edible,
+            "Growth Rate": plant.growth,
+            "Water Requirements": plant.water,
+            "Light Requirements": plant.light,
+            "Hardiness Rating": plant.hardiness,
+            "Soil Type": plant.soil_type
+        }
 
     else:
         print("No plant_id supplied!")
+        return None
 
 def main():
     help_menu()

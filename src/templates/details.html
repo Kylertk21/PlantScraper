@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plant Details</title>
+</head>
+<body>
+    <h2>{{ plant['Common Name'] }} ({{ plant['Scientific Name' }})</h2>
+    <ul>
+        {% for key, value in plant.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/">New Search</a>
+</body>
+</html>
