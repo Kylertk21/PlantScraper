@@ -1,4 +1,4 @@
-from src.classes import *
+from classes import *
 import json
 from flask import Flask
 
@@ -89,7 +89,25 @@ def retrieve_plant(plant_id):
         }
 
     else:
-        print("No plant_id supplied!")
+        return None
+
+def parse_sensor_data(data):
+    if data:
+        sensor_readings = Sensor()
+        sensor_readings.set_sensor_id(data['sensor_id'])
+        sensor_readings.set_sunlight(data['sensor_id']['sunlight'])
+        sensor_readings.set_time(data['sensor_id']['time'])
+        sensor_readings.set_water(data['sensor_id']['water'])
+
+        #TODO: assign relative values to readings (sensor side or server side)
+
+        return {
+            "Sensor ID": sensor_readings.sensor_id,
+            "Time" : sensor_readings.time,
+            "Water Reading:": sensor_readings.water,
+            "Sunlight Reading": sensor_readings.sunlight
+        }
+    else:
         return None
 
 def main():

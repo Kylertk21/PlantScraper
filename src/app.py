@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from src.scraper import *
+from scraper import *
 import __main__
 import json
 
@@ -21,3 +21,12 @@ def search():
 def plant_details(plant_id):
     data = retrieve_plant(plant_id)
     return render_template("details.html", plant=data)
+
+@app.route("/api/sensor", methods=["POST"])
+def receive_sensor_data():
+    if request.is_json:
+        received_data = request.get_json()
+        parsed = parse_sensor_data(received_data)
+        return render_template("sensors.html", sensor=parsed)
+    else:
+        return render_template("error.html", error="Incorrect data type!")

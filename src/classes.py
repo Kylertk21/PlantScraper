@@ -274,8 +274,8 @@ class PlantData:
             self.set_hardiness(data_dict.get('USDA Hardiness zone'))
             self.set_layer(data_dict.get('Layer'))
 
-class Sensor():
-    def __init__(self, sensor_id, sunlight, time, water, humidity, ph):
+class Sensor:
+    def __init__(self, sensor_id=None, sunlight=None, time=None, water=None, humidity=None, ph=None):
         self.sensor_id = sensor_id
         self.sunlight = sunlight
         self.time = time
