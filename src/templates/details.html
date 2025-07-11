@@ -5,7 +5,7 @@
     <title>Plant Details</title>
 </head>
 <body>
-    <h2>{{ plant['Common Name'] }} ({{ plant['Scientific Name' }})</h2>
+    <h2>{{ plant['Common Name'] }} ({{ plant['Scientific Name' ]}})</h2>
     <ul>
         {% for key, value in plant.items() %}
             <li><strong>{{ key }}:</strong> {{ value }}</li>

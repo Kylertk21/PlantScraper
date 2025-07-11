@@ -14,6 +14,7 @@ app = Flask("Plant Scraper Hub")
 def search_plants(plant_name, pages):
     plant = PlantData()
     plant_name = plant_name.lower()
+
     if not plant_name:
         return []
 
@@ -22,10 +23,20 @@ def search_plants(plant_name, pages):
     plant.set_plants_dict(plant_name, pages, SEARCH_URL)
 
     plant_ids = plant.get_plant_id()
+
+    plants = plant.plants_dict.get('plants', [])
+
+    return [
+        {
+            "name": p.get("name"),
+            "id": p.get("id")
+        }
+        for p in plants
+    ]
     if not plant_ids:
         print("No plants found by that name!")
         return None
-
+    """
     print("\nSearch Results: ")
     for i, p in enumerate(plant.plants_dict['plants']):
         name = p.get('name')
@@ -41,7 +52,7 @@ def search_plants(plant_name, pages):
     except (IndexError, ValueError):
         print("Invalid selection!")
         return None
-
+    """
 
 def help_menu():
     print(

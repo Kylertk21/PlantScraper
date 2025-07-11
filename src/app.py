@@ -12,12 +12,10 @@ def index():
 @app.route("/search", methods=["GET"])
 def search():
     query = request.args.get("plant")
-    results = []
+    pages = request.args.get("pages")
+    results = search_plants(query, 1) if query else []
 
-    if query:
-        results = search_plants(query, 1)
-
-    return render_template("results.html, plants=results, query=query")
+    return render_template("results.html", plants=results, query=query, pages=pages)
 
 @app.route("/plant/<plant_id>")
 def plant_details(plant_id):
