@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from scraper import *
 import __main__
 import json
+
+sensor_store = {}
 
 app = Flask(__name__)
 
@@ -24,9 +26,20 @@ def plant_details(plant_id):
 
 @app.route("/api/sensor", methods=["POST"])
 def receive_sensor_data():
+    print("Post request received")
     if request.is_json:
         received_data = request.get_json()
         parsed = parse_sensor_data(received_data)
-        return render_template("sensors.html", sensor=parsed)
+        print(parsed)
+        sensor_id = str(parsed["sensor_id"])
+        sensor_store[sensor_id] = parsed
+        return jsonify({"status": "success", "data": parsed}), 200
     else:
-        return render_template("error.html", error="Incorrect data type!")
+        return jsonify({"status": "error", "message": "Incorrect data type!"}), 400
+
+@app.route("/sensor/<sensor_id>", methods=["GET"])
+def render_sensor_data(sensor_id):
+    sensor = sensor_store.get(sensor_id)
+    return render_template("sensors.html", sensor=sensor)
+
+

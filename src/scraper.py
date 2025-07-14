@@ -95,17 +95,17 @@ def parse_sensor_data(data):
     if data:
         sensor_readings = Sensor()
         sensor_readings.set_sensor_id(data['sensor_id'])
-        sensor_readings.set_sunlight(data['sensor_id']['sunlight'])
-        sensor_readings.set_time(data['sensor_id']['time'])
-        sensor_readings.set_water(data['sensor_id']['water'])
+        sensor_readings.set_sunlight(data['readings']['sunlight'])
+        #sensor_readings.set_time(data['readings']['time'])
+        sensor_readings.set_water(data['readings']['water'])
 
         #TODO: assign relative values to readings (sensor side or server side)
 
         return {
-            "Sensor ID": sensor_readings.sensor_id,
-            "Time" : sensor_readings.time,
-            "Water Reading:": sensor_readings.water,
-            "Sunlight Reading": sensor_readings.sunlight
+            "sensor_id": sensor_readings.sensor_id,
+            "time" : sensor_readings.time,
+            "water": sensor_readings.water,
+            "sunlight": sensor_readings.sunlight
         }
     else:
         return None
