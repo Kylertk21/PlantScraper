@@ -12,7 +12,7 @@
     <div class="row justify-content-center mb-5">
         <div class="col-md-5">
             <h1 class="mb-5"><strong>Welcome to Plant Scraper</strong></h1>
-            <h2 class="mb-3">Search By Plant Name</h2>
+            <h2 class="mb-5">Search By Plant Name</h2>
             <form method="get" action="/search">
                 <label>
                     <input type="text" name="plant" placeholder="Search for a plant">
@@ -23,8 +23,16 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-5">
-            <h2 class="mb-3">View Sensors</h2>
-
+            <h2 class="mb-5">View Sensors</h2>
+            {% if sensors %}
+                <ul class="list-group mb-4">
+                    {% for key, sensor in sensors.items() %}
+                        <a href="{{ url_for('render_sensor_data', sensor_id=sensor.sensor_id) }}" class="btn btn-info mb-3">Sensor {{ sensor.sensor_id }}</a>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h2 class="text-warning">No Available Sensors</h2>
+            {% endif %}
         </div>
     </div>
 </div>

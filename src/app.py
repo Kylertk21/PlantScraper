@@ -1,23 +1,30 @@
 from flask import Flask, render_template, request, jsonify
 from scraper import *
-import __main__
 import json
 
 sensor_test = {
-    "sensor_id": "2",
-    "readings": {
-        "light_reading": "Full sun, partial sun/shade",
-        "water_reading": "Moist"
+    "1": {
+        "sensor_id": "Mint",
+        "readings": {
+            "light_reading": "Full sun, partial sun/shade",
+            "water_reading": "Moist"
+        }
+    },
+    "2": {
+        "sensor_id": "Juniper",
+        "readings": {
+            "light_reading": "partial sun/shade",
+            "water_reading": "dry"
+        }
     }
 }
 
 sensor_store = {}
 app = Flask(__name__)
-
 @app.route("/", methods=["GET"])
 def index():
 
-    return render_template("index.html", sensor=sensor_store)
+    return render_template("index.html", sensors=sensor_test)
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -47,7 +54,7 @@ def receive_sensor_data():
 
 @app.route("/sensor/<sensor_id>", methods=["GET"])
 def render_sensor_data(sensor_id):
-    sensor = sensor_store.get(sensor_id)
+    sensor = sensor_test.get(sensor_id)
     return render_template("sensors.html", sensor=sensor)
 
 
