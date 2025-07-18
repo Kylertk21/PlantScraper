@@ -1,6 +1,17 @@
 from flask import Flask, render_template, request, jsonify
 from scraper import *
 import json
+from flask_sqlalchemy import SQLAlchemy
+import os
+
+app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'plants.db')
+
+db = SQLAlchemy(app)
+
+with app.app_context():
+    db.create_all()
 
 sensor_test = {
     "1": {
