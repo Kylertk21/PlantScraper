@@ -4,19 +4,34 @@
     <meta charset="UTF-8">
     <title>Results</title>
 </head>
-<body>
-    <h2>Search Results For "{{ query }}"</h2>
-    <ul>
-        {% for plant in plants %}
-        <li>
-            {{ plant.name }} - <a href="/plant/{{ plant.id }}">View Details</a>
-        </li>
-        {% else %}
-        <li>
-            No Plants Found!
-        </li>
-        {% endfor %}
-    </ul>
-<a href="/">Search Again</a>
-</body>
+
+{% extends 'base.html' %}
+
+{% block header %}
+    {% block title %}Search Results{% endblock %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
+                <h2 class="mb-4"> <strong> Search Results For "{{ query }}":</strong> </h2>
+                <ul class="list-group mb-4">
+                    {% for plant in plants %}
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        {{ plant.name }}<a href="/plant/{{ plant.id }}" class="btn btn-secondary">View Details</a>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item d-flex justify-content-between bg-warning">
+                        No Plants Found!
+                    </li>
+                    {% endfor %}
+                    <a href="/" class="btn btn-primary">Search Again</a>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
 </html>

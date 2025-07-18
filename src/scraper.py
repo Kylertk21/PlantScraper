@@ -10,7 +10,6 @@ DETAILS_URL = 'https://permapeople.org/api/plants/'
 app = Flask("Plant Scraper Hub")
 
 
-
 def search_plants(plant_name, pages):
     plant = PlantData()
     plant_name = plant_name.lower()
@@ -36,23 +35,7 @@ def search_plants(plant_name, pages):
     if not plant_ids:
         print("No plants found by that name!")
         return None
-    """
-    print("\nSearch Results: ")
-    for i, p in enumerate(plant.plants_dict['plants']):
-        name = p.get('name')
-        pid = p.get('id')
-        print(f"{i + 1}: {name} (ID: {pid})")
 
-    selection = input("Enter plant number to view details: ")
-    try:
-        index = int(selection) - 1
-        index_id = plant.get_plant_id(index)
-        retrieve_plant(index_id)
-
-    except (IndexError, ValueError):
-        print("Invalid selection!")
-        return None
-    """
 
 def help_menu():
     print(

@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <title>Index</title>
 <html lang="en">
+{% extends 'base.html' %}
 
-<form method="get" action="/search">
-    <label>
-        <input type="text" name="plant" placeholder="Search for a plant">
-    </label>
-    <button type="submit">Search</button>
-</form>
+{% block header %}
+    {% block title %}Index{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-5">
+            <h1 class="mb-5"><strong>Welcome to Plant Scraper</strong></h1>
+            <h2 class="mb-3">Search By Plant Name</h2>
+            <form method="get" action="/search">
+                <label>
+                    <input type="text" name="plant" placeholder="Search for a plant">
+                </label>
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <h2 class="mb-3">View Sensors</h2>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

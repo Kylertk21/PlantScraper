@@ -2,15 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Plant Details</title>
 </head>
-<body>
-    <h2>{{ plant['Common Name'] }} ({{ plant['Scientific Name' ]}})</h2>
-    <ul>
-        {% for key, value in plant.items() %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
-        {% endfor %}
-    </ul>
-    <a href="/">New Search</a>
-</body>
+{% extends 'base.html' %}
+
+{% block header %}
+    {% block title %}Plant Details{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-5 text-center">
+                <h2 class="mb-4">{{ plant['Common Name'] }} <small class="text-muted"> ({{ plant['Scientific Name' ]}})</small></h2>
+                <ul class="list-group mb-4">
+                    {% for key, value in plant.items() %}
+                        <li class="list-group-item d-flex justify-content-between bg-light"><strong>{{ key }}:</strong> {{ value }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="/" class="btn btn-primary">New Search</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 </html>

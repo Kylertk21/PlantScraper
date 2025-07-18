@@ -3,13 +3,21 @@ from scraper import *
 import __main__
 import json
 
-sensor_store = {}
+sensor_test = {
+    "sensor_id": "2",
+    "readings": {
+        "light_reading": "Full sun, partial sun/shade",
+        "water_reading": "Moist"
+    }
+}
 
+sensor_store = {}
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+
+    return render_template("index.html", sensor=sensor_store)
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -41,5 +49,7 @@ def receive_sensor_data():
 def render_sensor_data(sensor_id):
     sensor = sensor_store.get(sensor_id)
     return render_template("sensors.html", sensor=sensor)
+
+
 
 

@@ -1,3 +1,5 @@
+import json
+
 import requests
 from requests.utils import super_len
 
@@ -233,6 +235,7 @@ class PlantData:
             try:
                 response = requests.get(url, headers=headers, json=query)
                 self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
+                print(json.dumps(self.plant_data[plant_id], indent=2))
 
             except requests.Timeout as e:
                 print(e)
