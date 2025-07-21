@@ -1,5 +1,5 @@
 from .classes import *
-from .models import PlantDataModel
+from .models import PlantDataModel, SensorDataModel
 from . import db
 from flask import Flask
 
@@ -100,8 +100,17 @@ def parse_sensor_data(data):
         sensor_readings = Sensor()
         sensor_readings.set_sensor_id(data['sensor_id'])
         sensor_readings.set_sunlight(data['readings']['sunlight'])
-        #sensor_readings.set_time(data['readings']['time'])
         sensor_readings.set_water(data['readings']['water'])
+
+        sensor_model = SensorDataModel(
+            sensor_id = sensor_readings.get_sensor_id(),
+            light_reading = sensor_readings.get_sunlight(),
+            water_reading = sensor_readings.get_water()
+        )
+
+        with app.app_context():
+            db.session.add(sensor_model)
+            db.session.commit()
 
         return {
             "sensor_id": sensor_readings.sensor_id,

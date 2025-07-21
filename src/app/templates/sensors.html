@@ -5,6 +5,7 @@
         fetch(`/api/sensor/${sensorId}`)
             .then(response => response.json())
             .then(data => {
+                document.getElementById('time').textContent = data.time;
                 document.getElementById('water').textContent = data.water;
                 document.getElementById('sunlight').textContent = data.sunlight;
             });
@@ -20,8 +21,17 @@
 <body>
 <div>
     <h2><strong>Sensor: {{ sensor.sensor_id }}</strong></h2>
-    <h2>Sunlight: <span id="sunlight">{{ sensor.sunlight }}</span></h2>
-    <h2>Water: <span id="water">{{ sensor.water }}</span></h2>
+    {% if sensor %}
+        <ul>
+            {% for record in sensor %}
+                <li><span id ="time">Time: {{ record.time }}</span></li>
+                <li><span id ="water">Water: {{ record.water }}</span></li>
+                <li><span id ="sunlight">Sunlight: {{ record.light }}</span></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No sensor data available.</p>
+    {% endif %}
 </div>
 </body>
 </html>

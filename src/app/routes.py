@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from .scraper import *
-from .models import PlantDataModel
+from .models import PlantDataModel, SensorDataModel
+from datetime import datetime
 
 routes = Blueprint('routes', __name__)
 
@@ -21,7 +22,6 @@ sensor_test = {
     }
 }
 
-sensor_store = {}
 @routes.route("/", methods=["GET"])
 def index():
     return render_template("index.html", sensors=sensor_store)
@@ -41,36 +41,76 @@ def plant_details(plant_id):
 
 @routes.route("/api/sensor", methods=["POST"])
 def receive_sensor_data():
-    print("Post request received")
     if request.is_json:
         received_data = request.get_json()
+
+        if not received_data or 'sensor_id' not in received_data or 'readings' not in received_data:
+            return jsonify({"error": "Invalid Data"}), 400
+
+        current_time = datetime.now()
         parsed = parse_sensor_data(received_data)
         sensor_id = str(parsed["sensor_id"])
-        sensor_store[sensor_id] = parsed
-        sensor = sensor_store[sensor_id]
+
+        new_entry = SensorDataModel(
+            sensor_id=sensor_id,
+            sunlight=["sunlight"],
+            water=parsed["water"],
+            time=current_time
+        )
+
+        db.session.add(new_entry)
+        db.session.commit()
+
+        records = SensorDataModel.query.filter_by(sensor_id=sensor_id).order_by(SensorDataModel.time.desc()).all()
+
+        if len(records) > 10:
+            delete = records[10:] #delete records older than the 10 newest
+            for old_record in delete:
+                db.session.delete(old_record)
+            db.session.commit()
+
         return jsonify({
-            'water': sensor["water"],
-            'sunlight': sensor["sunlight"],
+            "message": "Sensor data saved",
+            "timestamp": current_time.isoformat()
         }), 200
     else:
-        return jsonify({"status": "error", "message": "Incorrect data type!"}), 400
+        return jsonify({
+            "status": "error",
+            "message": "Incorrect data type!"
+        }), 400
 
 @routes.route("/api/sensor/<sensor_id>", methods=["GET"])
 def get_sensor_data(sensor_id):
-    sensor = sensor_store.get(sensor_id)
-    if not sensor:
+    sensors = SensorDataModel.query.filter_by(sensor_id=sensor_id).order_by(SensorDataModel.time.desc()).all()
+
+    if not sensors:
         return jsonify({
-            "error": "Sensor not found"
-        })
-    return jsonify({
-        'water': sensor["water"],
-        'sunlight': sensor["sunlight"],
-    })
+            "error": "Sensor data not found"
+        }), 404
+
+    return jsonify(
+        {
+        "sensor_id": sensor.sensor_id,
+        "water": sensor.water,
+        "sunlight": sensor.sunlight,
+        "time": sensor.time
+    }
+        for sensor in sensors
+    )
 
 @routes.route("/sensor/<sensor_id>", methods=["GET"])
 def render_sensor_data(sensor_id):
-    sensor = sensor_store.get(sensor_id)
-    return render_template("sensors.html", sensor=sensor)
+    latest = (
+        SensorDataModel.query
+        .filter_by(sensor_id=sensor_id)
+        .order_by(SensorDataModel.time.desc())
+        .first()
+    )
+
+    if not latest:
+        return render_template("sensors.html", sensor=None, sensor_id=sensor_id)
+
+    return render_template("sensors.html", sensor=latest)
 
 
 
