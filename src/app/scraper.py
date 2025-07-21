@@ -1,5 +1,6 @@
-from classes import *
-import json
+from .classes import *
+from .models import PlantDataModel
+from . import db
 from flask import Flask
 
 API_TOKEN_ID = 'es8PtscRbKJ7'
@@ -20,9 +21,7 @@ def search_plants(plant_name, pages):
     plant.set_api_token_id(API_TOKEN_ID)
     plant.set_api_token_secret(API_TOKEN_SECRET)
     plant.set_plants_dict(plant_name, pages, SEARCH_URL)
-
     plant_ids = plant.get_plant_id()
-
     plants = plant.plants_dict.get('plants', [])
 
     return [
@@ -56,6 +55,28 @@ def retrieve_plant(plant_id):
         data = plant.get_plant_data(plant_id)
         plant.populate_plant_class(data)
 
+        plant_model = PlantDataModel(
+            id=plant_id,
+            common_name=plant.common_name,
+            scientific_name=plant.scientific_name,
+            family=plant.family,
+            description=plant.description,
+            link=plant.link,
+            edible_parts=plant.edible,
+            growth=plant.growth,
+            water=plant.water,
+            light=plant.light,
+            hardiness=plant.hardiness,
+            soil_type=plant.soil_type
+        )
+
+        with app.app_context():
+            existing = plant_model.query.get(plant_id)
+            if not existing:
+                db.session.add(plant_model)
+                db.session.commit()
+
+
         return {
             "Plant ID": plant_id,
             "Common Name": plant.common_name,
@@ -82,8 +103,6 @@ def parse_sensor_data(data):
         #sensor_readings.set_time(data['readings']['time'])
         sensor_readings.set_water(data['readings']['water'])
 
-        #TODO: assign relative values to readings (sensor side or server side)
-
         return {
             "sensor_id": sensor_readings.sensor_id,
             "time" : sensor_readings.time,
@@ -94,6 +113,7 @@ def parse_sensor_data(data):
         return None
 
 def main():
+
     help_menu()
     while True:
         command = input("PSC > ")

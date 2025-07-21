@@ -27,7 +27,7 @@
             {% if sensors %}
                 <ul class="list-group mb-4">
                     {% for key, sensor in sensors.items() %}
-                        <a href="{{ url_for('render_sensor_data', sensor_id=sensor.sensor_id) }}" class="btn btn-info mb-3">Sensor {{ sensor.sensor_id }}</a>
+                        <a href="{{ url_for('routes.render_sensor_data', sensor_id=sensor.sensor_id) }}" class="btn btn-info mb-3">Sensor {{ sensor.sensor_id }}</a>
                     {% endfor %}
                 </ul>
             {% else %}
