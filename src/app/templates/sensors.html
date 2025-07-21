@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>
+    function fetchSensorData(sensorId) {
+        fetch(`/api/sensor/${sensorId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('water').textContent = data.water;
+                document.getElementById('sunlight').textContent = data.sunlight;
+            });
+    }
+
+    const sensorId = "{{ sensor.sensor_id }}";
+    setInterval(() => fetchSensorData(sensorId), 5000);
+</script>
 <head>
     <meta charset="UTF-8">
     <title>Sensor Readings</title>
 </head>
 <body>
+<div>
     <h2><strong>Sensor: {{ sensor.sensor_id }}</strong></h2>
-    <h2>Sunlight: {{ sensor.sunlight }}</h2>
-    <h2>Water: {{ sensor.water }}</h2>
+    <h2>Sunlight: <span id="sunlight">{{ sensor.sunlight }}</span></h2>
+    <h2>Water: <span id="water">{{ sensor.water }}</span></h2>
+</div>
 </body>
 </html>

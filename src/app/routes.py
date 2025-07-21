@@ -36,7 +36,7 @@ def search():
 
 @routes.route("/plant/<plant_id>")
 def plant_details(plant_id):
-    data = PlantDataModel.query.all()
+    data = PlantDataModel.query.get(plant_id)
     return render_template("details.html", plant=data)
 
 @routes.route("/api/sensor", methods=["POST"])
@@ -45,12 +45,27 @@ def receive_sensor_data():
     if request.is_json:
         received_data = request.get_json()
         parsed = parse_sensor_data(received_data)
-        print(parsed)
         sensor_id = str(parsed["sensor_id"])
         sensor_store[sensor_id] = parsed
-        return jsonify({"status": "success", "data": parsed}), 200
+        sensor = sensor_store[sensor_id]
+        return jsonify({
+            'water': sensor["water"],
+            'sunlight': sensor["sunlight"],
+        }), 200
     else:
         return jsonify({"status": "error", "message": "Incorrect data type!"}), 400
+
+@routes.route("/api/sensor/<sensor_id>", methods=["GET"])
+def get_sensor_data(sensor_id):
+    sensor = sensor_store.get(sensor_id)
+    if not sensor:
+        return jsonify({
+            "error": "Sensor not found"
+        })
+    return jsonify({
+        'water': sensor["water"],
+        'sunlight': sensor["sunlight"],
+    })
 
 @routes.route("/sensor/<sensor_id>", methods=["GET"])
 def render_sensor_data(sensor_id):
