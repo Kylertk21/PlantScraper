@@ -191,8 +191,8 @@ class PlantData:
             return
 
         if plant_data is not None:
-            self.set_common_name(plant_data.get('name'))
-            self.set_scientific_name(plant_data.get('scientific_name'))
+            self.common_name = (plant_data.get('name'))
+            self.scientific_name = (plant_data.get('scientific_name'))
 
             self.description = (plant_data.get('description'))
             self.link = (plant_data.get('link'))
