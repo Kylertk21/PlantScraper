@@ -9,10 +9,11 @@ class PlantData:
     Data structure for holding plant data
     """
     def __init__(self, api_token_id=None, api_token_secret=None, base_url=None, plants_dict:dict=None, plant_data:dict=None,
-                 plant_id:list=[], common_name=None, scientific_name=None, description=None, link=None,
+                 plant_id:list=[], common_name=None, scientific_name=None, description=None, link=None, edible_parts=None,
                  edible=None, growth=None, water=None, light=None, hardiness=None, layer=None, soil_type=None,
                  family=None):
 
+        self.edible_parts = edible_parts
         self.api_token_id = api_token_id
         self.api_token_secret = api_token_secret
         self.base_url = base_url
@@ -90,76 +91,6 @@ class PlantData:
 
     def get_scientific_name(self):
         return self.scientific_name
-
-    def set_description(self, description):
-        if description is not None:
-            self.description = description
-
-    def get_description(self):
-        return self.description
-
-    def set_link(self, link):
-        if link is not None:
-            self.link = link
-
-    def get_link(self):
-        return self.link
-
-    def set_edible(self, edible):
-        if edible is not None:
-            self.edible = edible
-
-    def get_edible(self):
-        return self.edible
-
-    def set_growth(self, growth):
-        if growth is not None:
-            self.growth = growth
-
-    def get_growth(self):
-        return self.growth
-
-    def set_water(self, water):
-        if water is not None:
-            self.water = water
-
-    def get_water(self):
-        return self.water
-
-    def set_light(self, light):
-        if light is not None:
-            self.light = light
-
-    def get_light(self):
-        return self.light
-
-    def set_hardiness(self, hardiness):
-        if hardiness is not None:
-            self.hardiness = hardiness
-
-    def get_hardiness(self):
-        return self.hardiness
-
-    def set_layer(self, layer):
-        if layer is not None:
-            self.layer = layer
-
-    def get_layer(self):
-        return self.layer
-
-    def set_soil_type(self, soil_type):
-        if soil_type is not None:
-            self.soil_type = soil_type
-
-    def get_soil_type(self):
-        return self.soil_type
-
-    def set_family(self, family):
-        if family is not None:
-            self.family = family
-
-    def get_family(self):
-        return self.family
 
     def set_plants_dict(self, query, page=1, url=""):
         """
@@ -262,20 +193,22 @@ class PlantData:
         if plant_data is not None:
             self.set_common_name(plant_data.get('name'))
             self.set_scientific_name(plant_data.get('scientific_name'))
-            self.set_description(plant_data.get('description'))
-            self.set_link(plant_data.get('link'))
+
+            self.description = (plant_data.get('description'))
+            self.link = (plant_data.get('link'))
 
             data_list = plant_data.get('data', []) # list of data dicts
             data_dict = {item['key']: item['value'] for item in data_list} # cleans key : value pair
 
-            self.set_edible(data_dict.get('Edible parts'))
-            self.set_growth(data_dict.get('Growth'))
-            self.set_water(data_dict.get('Water requirement'))
-            self.set_light(data_dict.get('Light requirement'))
-            self.set_soil_type(data_dict.get('Soil type'))
-            self.set_family(data_dict.get('Family'))
-            self.set_hardiness(data_dict.get('USDA Hardiness zone'))
-            self.set_layer(data_dict.get('Layer'))
+            self.edible = (data_dict.get('Edible'))
+            self.edible_parts = (data_dict.get('Edible Parts'))
+            self.growth = (data_dict.get('Growth'))
+            self.water = (data_dict.get('Water requirement'))
+            self.light = (data_dict.get('Light requirement'))
+            self.soil_type = (data_dict.get('Soil type'))
+            self.family = (data_dict.get('Family'))
+            self.hardiness = (data_dict.get('USDA Hardiness zone'))
+            self.layer = (data_dict.get('Layer'))
 
 class Sensor:
     def __init__(self, sensor_id=None, sunlight=None, time=None, water=None, humidity=None, ph=None):
@@ -292,43 +225,5 @@ class Sensor:
 
     def get_sensor_id(self):
         return self.sensor_id
-
-    def set_sunlight(self, sunlight):
-        if sunlight is not None:
-            self.sunlight = sunlight
-
-    def get_sunlight(self):
-        return self.sunlight
-
-    def set_time(self, time):
-        if time is not None:
-            self.time = time
-
-    def get_time(self):
-        return self.time
-
-    def set_water(self, water):
-        if water is not None:
-            self.water = water
-
-    def get_water(self):
-        return self.water
-
-    def set_humidity(self, humidity):
-        if humidity is not None:
-            self.humidity = humidity
-
-    def get_humidity(self):
-        return self.humidity
-
-    def set_ph(self, ph):
-        if ph is not None:
-            self.ph = ph
-
-    def get_ph(self):
-        return self.ph
-
-    def read_sensors(self):# TODO: read sensors and return raw output
-        return None
 
 

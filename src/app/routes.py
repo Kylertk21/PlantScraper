@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, current_app
 from .scraper import *
 from .models import PlantDataModel, SensorDataModel
 from datetime import datetime
@@ -24,7 +24,7 @@ sensor_test = {
 
 @routes.route("/", methods=["GET"])
 def index():
-    return render_template("index.html", sensors=sensor_store)
+    return render_template("index.html", sensors=sensor_test)
 
 @routes.route("/search", methods=["GET"])
 def search():
@@ -37,6 +37,11 @@ def search():
 @routes.route("/plant/<plant_id>")
 def plant_details(plant_id):
     data = PlantDataModel.query.get(plant_id)
+    if data is None:
+
+        with current_app.app_context():
+            data = retrieve_plant(plant_id)
+
     return render_template("details.html", plant=data)
 
 @routes.route("/api/sensor", methods=["POST"])

@@ -34,6 +34,7 @@ def search_plants(plant_name, pages):
     if not plant_ids:
         print("No plants found by that name!")
         return None
+    return None
 
 
 def help_menu():
@@ -62,7 +63,8 @@ def retrieve_plant(plant_id):
             family=plant.family,
             description=plant.description,
             link=plant.link,
-            edible_parts=plant.edible,
+            edible=plant.edible,
+            edible_parts=plant.edible_parts,
             growth=plant.growth,
             water=plant.water,
             light=plant.light,
@@ -99,13 +101,13 @@ def parse_sensor_data(data):
     if data:
         sensor_readings = Sensor()
         sensor_readings.set_sensor_id(data['sensor_id'])
-        sensor_readings.set_sunlight(data['readings']['sunlight'])
-        sensor_readings.set_water(data['readings']['water'])
+        sensor_readings.sunlight = (data['readings']['sunlight'])
+        sensor_readings.water = (data['readings']['water'])
 
         sensor_model = SensorDataModel(
             sensor_id = sensor_readings.get_sensor_id(),
-            light_reading = sensor_readings.get_sunlight(),
-            water_reading = sensor_readings.get_water()
+            light_reading = sensor_readings.sunlight(),
+            water_reading = sensor_readings.water()
         )
 
         with app.app_context():

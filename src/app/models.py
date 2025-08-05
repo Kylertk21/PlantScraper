@@ -17,6 +17,7 @@ class PlantDataModel(db.Model):
     description = db.Column(db.String)
     link = db.Column(db.String)
     edible = db.Column(db.String)
+    edible_parts = db.Column(db.String)
     growth = db.Column(db.String)
     water = db.Column(db.String)
     light = db.Column(db.String)
