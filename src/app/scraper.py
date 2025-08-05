@@ -8,9 +8,6 @@ API_TOKEN_SECRET = 'aacc3745-7123-4cb5-ac1a-703cf61ee82f'
 SEARCH_URL = 'https://permapeople.org/api/search'
 DETAILS_URL = 'https://permapeople.org/api/plants/'
 
-app = Flask("Plant Scraper Hub")
-
-
 def search_plants(plant_name, pages):
     plant = PlantData()
     plant_name = plant_name.lower()
@@ -72,11 +69,10 @@ def retrieve_plant(plant_id):
             soil_type=plant.soil_type
         )
 
-        with app.app_context():
-            existing = plant_model.query.get(plant_id)
-            if not existing:
-                db.session.add(plant_model)
-                db.session.commit()
+        existing = plant_model.query.get(plant_id)
+        if not existing:
+            db.session.add(plant_model)
+            db.session.commit()
 
 
         return {
