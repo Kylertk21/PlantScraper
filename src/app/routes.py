@@ -40,9 +40,7 @@ def plant_details(plant_id):
     if data is None:
         with current_app.app_context():
             data = retrieve_plant(plant_id)
-
-        plant_dict = {column.name: getattr(data, column.name) for column in data.__table__.columns}
-
+    plant_dict = {column.name: getattr(data, column.name) for column in data.__table__.columns}
     return render_template("details.html", plant=plant_dict)
 
 @routes.route("/api/sensor", methods=["POST"])
