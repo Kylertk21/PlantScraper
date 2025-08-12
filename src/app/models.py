@@ -12,7 +12,7 @@ class SensorDataModel(db.Model):
 class PlantDataModel(db.Model):
     __tablename__ = 'plant_data'
     id = db.Column(db.String, primary_key=True)
-    common_name = db.Column(db.String)
+    name = db.Column(db.String)
     scientific_name = db.Column(db.String)
     description = db.Column(db.String)
     link = db.Column(db.String)
@@ -27,4 +27,4 @@ class PlantDataModel(db.Model):
     family = db.Column(db.String)
 
     def __repr__(self):
-        return f"<PlantData {self.common_name}>"
+        return f"<PlantData {self.name}>"

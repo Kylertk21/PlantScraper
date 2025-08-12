@@ -38,10 +38,16 @@ def search():
 def plant_details(plant_id):
     data = PlantDataModel.query.filter_by(id=plant_id).first()
     if data is None:
-        with current_app.app_context():
-            data = retrieve_plant(plant_id)
-    plant_dict = {column.name: getattr(data, column.name) for column in data.__table__.columns}
-    return render_template("details.html", plant=plant_dict)
+        data = retrieve_plant(plant_id)
+        if hasattr(data, "__table__"):
+            with current_app.app_context():
+                plant_dict = {column.name: getattr(data, column.name) for column in data.__table__.columns}
+        else:
+            plant_dict = dict(data)
+        print(plant_dict)
+
+    return render_template("details.html", plant=retrieve_plant(plant_id))
+
 
 @routes.route("/api/sensor", methods=["POST"])
 def receive_sensor_data():
@@ -113,7 +119,6 @@ def render_sensor_data(sensor_id):
 
     if not latest:
         return render_template("sensors.html", sensor=None, sensor_id=sensor_id)
-
     return render_template("sensors.html", sensor=latest)
 
 

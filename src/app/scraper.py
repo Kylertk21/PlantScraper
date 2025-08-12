@@ -1,7 +1,7 @@
 from .classes import *
 from .models import PlantDataModel, SensorDataModel
 from . import db
-from flask import Flask
+from flask import current_app
 
 API_TOKEN_ID = 'es8PtscRbKJ7'
 API_TOKEN_SECRET = 'aacc3745-7123-4cb5-ac1a-703cf61ee82f'
@@ -55,7 +55,7 @@ def retrieve_plant(plant_id):
 
         plant_model = PlantDataModel(
             id=plant_id,
-            common_name=plant.common_name,
+            name=plant.name,
             scientific_name=plant.scientific_name,
             family=plant.family,
             description=plant.description,
@@ -76,18 +76,18 @@ def retrieve_plant(plant_id):
 
 
         return {
-            "Plant ID": plant_id,
-            "Common Name": plant.common_name,
-            "Scientific Name": plant.scientific_name,
-            "Family": plant.family,
-            "Description": plant.description,
-            "Link": plant.link,
-            "Edible Parts": plant.edible,
-            "Growth Rate": plant.growth,
-            "Water Requirements": plant.water,
-            "Light Requirements": plant.light,
-            "Hardiness Rating": plant.hardiness,
-            "Soil Type": plant.soil_type
+            "plant_id": plant_id,
+            "name": plant.name,
+            "scientific_name": plant.scientific_name,
+            "family": plant.family,
+            "description": plant.description,
+            "link": plant.link,
+            "edible_parts": plant.edible,
+            "growth_rate": plant.growth,
+            "water_requirements": plant.water,
+            "light_requirements": plant.light,
+            "hardiness_rating": plant.hardiness,
+            "soil_type": plant.soil_type
         }
 
     else:
@@ -106,7 +106,7 @@ def parse_sensor_data(data):
             water_reading = sensor_readings.water()
         )
 
-        with app.app_context():
+        with current_app.app_context():
             db.session.add(sensor_model)
             db.session.commit()
 

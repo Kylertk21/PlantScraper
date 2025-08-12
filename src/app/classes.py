@@ -1,5 +1,4 @@
 import json
-
 import requests
 from requests.utils import super_len
 
@@ -9,7 +8,7 @@ class PlantData:
     Data structure for holding plant data
     """
     def __init__(self, api_token_id=None, api_token_secret=None, base_url=None, plants_dict:dict=None, plant_data:dict=None,
-                 plant_id:list=[], common_name=None, scientific_name=None, description=None, link=None, edible_parts=None,
+                 plant_id:list=[], name=None, scientific_name=None, description=None, link=None, edible_parts=None,
                  edible=None, growth=None, water=None, light=None, hardiness=None, layer=None, soil_type=None,
                  family=None):
 
@@ -20,7 +19,7 @@ class PlantData:
         self.plants_dict = plants_dict
         self.plant_data = plant_data
         self.plant_id = plant_id
-        self.common_name = common_name
+        self.name = name
         self.scientific_name = scientific_name
         self.description = description
         self.link = link
@@ -76,13 +75,13 @@ class PlantData:
         else:
             return getattr(self, 'plant_id', [])[index]
 
-    def set_common_name(self, common_name):
-        if common_name is not None:
-            self.common_name = common_name
-        else: print("Input common name empty!")
+    def set_name(self, name):
+        if name is not None:
+            self.name = name
+        else: print("Input name empty!")
 
-    def get_common_name(self):
-        return self.common_name
+    def get_name(self):
+        return self.name
 
     def set_scientific_name(self, scientific_name):
         if scientific_name is not None:
@@ -124,7 +123,6 @@ class PlantData:
 
                 for plant in plants['plants']:
                     if plant['id'] not in self.plant_id:
-                        print('Adding plant to dict...')
                         self.plant_id.append(plant['id'])
                         self.plants_dict['plants'].append(plant)
                     else:
@@ -136,8 +134,8 @@ class PlantData:
         else:
             print("missing parameters for set_plants_dict!")
 
-    def get_plants_dict(self):
-        return self.plants_dict
+    def get_plants_dict(self, plant_id):
+        return self.plants_dict[plant_id]
 
     def set_plant_data(self, base_url, plant_id):
         """
@@ -165,8 +163,7 @@ class PlantData:
 
             try:
                 response = requests.get(url, headers=headers, json=query)
-                self.plant_data[plant_id]  = response.json() #stores plant data based on passed plant_id
-                print(json.dumps(self.plant_data[plant_id], indent=2))
+                self.plant_data[plant_id] = response.json() #stores plant data based on passed plant_id
 
             except requests.Timeout as e:
                 print(e)
@@ -191,7 +188,7 @@ class PlantData:
             return
 
         if plant_data is not None:
-            self.common_name = (plant_data.get('name'))
+            self.name = (plant_data.get('name'))
             self.scientific_name = (plant_data.get('scientific_name'))
 
             self.description = (plant_data.get('description'))
