@@ -2,8 +2,11 @@ from flask import Blueprint, render_template, request, jsonify, current_app
 from .scraper import *
 from .models import PlantDataModel, SensorDataModel
 from datetime import datetime
+import paho.mqtt.client as mqtt
+import random, logging, time
 
 routes = Blueprint('routes', __name__)
+
 
 sensor_test = {
     "1": {
@@ -21,6 +24,8 @@ sensor_test = {
         }
     }
 }
+
+
 
 @routes.route("/", methods=["GET"])
 def index():
@@ -47,7 +52,6 @@ def plant_details(plant_id):
         print(plant_dict)
 
     return render_template("details.html", plant=retrieve_plant(plant_id))
-
 
 @routes.route("/api/sensor", methods=["POST"])
 def receive_sensor_data():
