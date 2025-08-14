@@ -31,16 +31,20 @@ client_id = f'python-mqtt-{random.randint(0,1000)}'
 
 db = SQLAlchemy()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
 
     db_path = os.path.join(BASE_DIR, 'data.sqlite')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    if test_config:
+        app.config.update(test_config)
+
     db.init_app(app)
 
     from . import models
     from .routes import routes
-
     app.register_blueprint(routes)
 
     with app.app_context():
